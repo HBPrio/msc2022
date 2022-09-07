@@ -11,7 +11,7 @@ This repository is a complementary page for the dissertation "History-based Prio
 <br/><br/>
 <img src="https://github.com/HBPrio/msc2022/blob/main/images/APFDs_KW-RankSumTest.PNG" width="600">
 <br/><br/>
-<img src="https://github.com/HBPrio/msc2022/blob/main/images/APFDs_VD.A-EffectSize.PNG" width="800">
+<img src="https://github.com/HBPrio/msc2022/blob/main/images/APFDs_VD.A-EffectSize.PNG" width="600">
 <br/><br/>
 
 ### RQ2: Efficiency
