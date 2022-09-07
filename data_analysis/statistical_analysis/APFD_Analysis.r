@@ -6,6 +6,9 @@ library(nortest, pos=17) # ad.test
 library(pgirmess) # kruskalmc
 library(agricolae) # kruskal with tukey groups
 library(RColorBrewer)
+library(rcompanion)  # multiVDA
+library(effsize) # VD.A
+library(dplyr) # glimpse
 
 #==================================================
 # Preparation
@@ -13,12 +16,14 @@ library(RColorBrewer)
 setwd("c:/Users/siqueira/Documents/...")
 
 approaches <- c(
-  "OTD",
-  "RO",
-  "BO",
+  "Optimal",
+  "HB-all",
+  "HB-fam",
+  "RealOrd",
   "NewOld",
-  "OHB_v01",
-  "OHB_v02"
+  "Rnd",
+  "hbd_rnd_t80",
+  "hbd_ncs_t80"
 )
 v_factor_levels <- unique(approaches)
 
@@ -34,22 +39,25 @@ my.cols = brewer.pal(n = 8, name = "Dark2")
 
 #reordering and renaming
 raw_results$Approach <- factor(raw_results$Approach, 
-                               levels=c("BO","OHB_v02","OHB_v01","RO","NewOld","OTD"),
-                               labels=c("Optimal","Fam-dep","Fam-ind","Random","NewOld","RealOrd"))
+                               levels=c("Optimal","HB-fam","HB-all","hbd_ncs_t80","hbd_rnd_t80","NewOld","RealOrd","Rnd"),
+                               labels=c("Optimal","Fam-dep","Fam-ind","HBD","HBR","NewOld","RealOrd","Random"),)
 
 
 #==================================================
 # Boxplots (TTFF)
 #==================================================
-#png("APFD_BoxPlot.png", width=800, height=600)
+pdf_w <- 16
+pdf_h <- 12
+my.cols = brewer.pal(n = 8, name = "Dark2")
+
 pdf("APFD_BoxPlot.pdf", width=pdf_w, height=pdf_h)
 
 ggplot(data=subset(raw_results, !is.na(APFD)), aes(Approach, APFD, fill=Approach))+ 
   geom_boxplot(outlier.size = 3, size=1)+
-  scale_fill_manual(values = my.cols)+
+  scale_fill_manual(values = c("#F37B59", "#A3A500", "#00BE6C","#00C0B8", "#00B8E5", "#00A5FF","#9590FF","#DC71FA"))+
   theme_light()+ 
-  theme(axis.text = element_text(size = 20),
-                           axis.title.y = element_text(size = 24, margin = margin(r=10)),
+  theme(axis.text = element_text(size = 18),
+                           axis.title.y = element_text(size = 22, margin = margin(r=10)),
                            legend.position="none",
                            axis.title.x = element_blank())
 
@@ -78,3 +86,15 @@ kruskalmc(raw_results$APFD, raw_results$Approach)
 
 out <- kruskal(raw_results$APFD, raw_results$Approach)
 out
+
+# ?rcompanion::multiVDA
+
+#==================================================
+# Pairwise Vargha and Delaney's A and Cliff's delta
+#==================================================
+multiVDA(APFD ~ Approach, data=raw_results)
+
+#==================================================
+# VD.A: Vargha and Delaney A measure 
+# (small, >= 0.56; medium, >= 0.64; large, >= 0.71)
+#==================================================
